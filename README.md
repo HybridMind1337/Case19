@@ -9,8 +9,7 @@ Case19 е разработка от екипа на [WEBOcean.INFO](https://webo
 ![phpBB 3.2.X](https://img.shields.io/badge/phpBB%20Compatible-3.2.X-blue?style=flat-square)
 ![phpBB 3.3.X](https://img.shields.io/badge/phpBB%20Compatible-3.3.X-green?style=flat-square)
 
-Използвани методи
-============
+### Използвани методи
 - Mustache (Template Engine, Logic-Less)
 - PHP
 - HTML5
