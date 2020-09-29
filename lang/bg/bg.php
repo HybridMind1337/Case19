@@ -95,5 +95,6 @@ $lang_sys = array(
     "lang_navigation" => "Навигация",
     "lang_stats" => "Статистика",
     "lang_seemore"  =>  "Виж още..",
+    "lang_vote" =>  "Гласувай",
 );
 ?>
