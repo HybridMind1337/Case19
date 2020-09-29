@@ -840,3 +840,208 @@ function file_get_contents_utf8($url) {
         return mb_convert_encoding($raw, 'UTF-8', mb_detect_encoding($raw, 'UTF-8, ISO-8859-1', true));
     }
 }
+
+//CS:GO
+function query_csgo($ip,$port) {
+error_reporting(0);
+$ServerinfoCommand = "\xFF\xFF\xFF\xFFTSource Engine Query\x00";
+$fp = @fsockopen("udp://".''.$ip.':'.$port.'', $errno, $errstr);
+@fwrite($fp, $ServerinfoCommand);
+@stream_set_timeout($fp, 1);
+@stream_set_blocking($fp, TRUE); 
+$JunkHead3 = @fread($fp,1000);
+fclose($fp);
+
+$packet_array = explode("\x00", substr($JunkHead3, 6), 5);
+$server['name'] = $packet_array[0];
+$server['map'] = $packet_array[1];
+
+$packet = $packet_array[4];
+$server['players'] = ord(substr($packet, 2, 1));
+$server['playersmax'] = ord(substr($packet, 3, 1));
+$server['server_os']= substr($packet, 6,1);
+$server['vac']         = ord(substr($packet, 8, 1));  
+$server['bots']        = ord(substr($packet, 4, 1)); 
+$server['gamedir'] = $packet_array[2];
+ 
+
+///////////GET PLAYERS
+$ServerinfoCommand = "\xFF\xFF\xFF\xFFU\xFF\xFF\xFF\xFF";
+$fp = @fsockopen("udp://".''.$ip.':'.$port.'', $errno, $errstr);
+@fwrite($fp, $ServerinfoCommand);
+@stream_set_timeout($fp, 1);
+@stream_set_blocking($fp, TRUE); 
+$JunkHead3 = @fread($fp,1000);
+fclose($fp);
+$challenge = substr($JunkHead3, 5);
+   
+$ServerinfoCommand = "\xFF\xFF\xFF\xFFU" . $challenge;
+$fp = @fsockopen("udp://".''.$ip.':'.$port.'', $errno, $errstr);
+@fwrite($fp, $ServerinfoCommand);
+@stream_set_timeout($fp, 1);
+@stream_set_blocking($fp, TRUE); 
+$infos = @fread($fp,1000);
+fclose($fp);
+//bullshit end
+      
+$infos = chunk_split(substr(bin2hex($infos), 12), 2, '\\');
+$infos = explode('\\', $infos);
+$players = array();
+
+for ($i = 0; isset($infos[$i + 1]); $i = $j + 9) {
+
+// Player name
+$name = '';
+for ($j = $i + 1; isset($infos[$j]) && $infos[$j] != '00'; $j++) $name .= chr(hexdec($infos[$j]));
+         
+if (!isset($infos[$j + 8])) break;
+         
+// Gametime
+eval('$time="\x'.trim(chunk_split($infos[$j + 5] . $infos[$j + 6] . $infos[$j + 7] . $infos[$j + 8], 2,"\x"), "\x") . '";');
+list(,$time) = unpack('f', $time);
+         
+// Score
+$score = ltrim($infos[$j + 4] . $infos[$j + 3] . $infos[$j + 2] . $infos[$j + 1], '0');
+         
+//hexdecs
+$dec = hexdec($score);
+$max = pow(2, 4 * (strlen($score) + (strlen($score) % 2)));
+$_dec = $max - $dec;
+$scoredesc = $dec > $_dec ? -$_dec : $dec;
+//hexdecs
+         
+$players[] = array(
+'id'   =>   hexdec($infos[$i]),
+'name'   =>   $name,
+'score'   =>   empty($score)? 0 : $scoredesc,
+'time'   =>   $time
+);
+}
+//////////GET PLAYERS
+
+switch($server['server_os']) {
+case 'w': {
+$server['server_os'] = "Windows";
+break;
+}
+case 'l': {
+$server['server_os'] = "Linux";
+break;
+}
+}
+
+///////////////////////KRAI NA QUERYTATA//////////////////////////////
+return array('s_name'=>$server['name'],'s_map'=>$server['map'],'s_players'=>$server['players'],'s_maxplayers'=>$server['playersmax'],'s_os'=>$server['server_os'],'s_game'=>$server['gamedir'],'s_vac'=>$server['vac'],'s_bots'=>$server['bots'],'s_playerlist'=>$players);
+}
+
+//CS 16
+function query_cs16($ip,$port) {
+error_reporting(0);
+$ServerinfoCommand = "\xFF\xFF\xFF\xFFTSource Engine Query\x00";
+$fp = @fsockopen("udp://".''.$ip.':'.$port.'', $errno, $errstr);
+@fwrite($fp, $ServerinfoCommand);
+@stream_set_timeout($fp, 1);
+@stream_set_blocking($fp, TRUE); 
+$JunkHead3 = @fread($fp,1000);
+fclose($fp);
+
+$packet_array = explode("\x00", substr($JunkHead3, 6), 5);
+$server['name'] = $packet_array[0];
+$server['map'] = $packet_array[1];
+
+ 
+
+$packet = $packet_array[4];
+$server['players'] = ord(substr($packet, 2, 1));
+$server['playersmax'] = ord(substr($packet, 3, 1));
+$server['server_os']= substr($packet, 6,1);
+$server['vac']         = ord(substr($packet, 8, 1));  
+$server['bots']        = ord(substr($packet, 4, 1)); 
+$server['gamedir'] = $packet_array[2];
+
+//////OLD QUERY BY DEDIHOST/////
+if (preg_match("/27.0.0.1/i", $server['name'])){
+$server['name'] = $packet_array[1];
+$server['map'] = $packet_array[2];
+$tmp = explode("\x00", $JunkHead3);
+$place = strlen($tmp[0].$tmp[1].$tmp[2].$tmp[3].$tmp[4]) + 5;
+$server['players'] = ord($JunkHead3[$place]);
+$server['playersmax'] = ord($JunkHead3[$place + 1]);
+$server['server_os']= $JunkHead3[$place + 4];
+$server['gamedir'] = $tmp[3];
+$server['bots'] = ord($tmp[15]); 
+$server['vac'] =  ord($tmp[14]); 
+if($tmp[3] == "cstrike" || strpos($JunkHead3, "1.1.2.7") !== false ||  strpos($JunkHead3, "1.1.2.6") !== false) {
+$server['gamedir'] = "cs16";
+}
+}
+//END OLD QUERY BY DEDIHOST/////
+
+///////////GET PLAYERS
+$ServerinfoCommand = "\xFF\xFF\xFF\xFFU\xFF\xFF\xFF\xFF";
+$fp = @fsockopen("udp://".''.$ip.':'.$port.'', $errno, $errstr);
+@fwrite($fp, $ServerinfoCommand);
+@stream_set_timeout($fp, 1);
+@stream_set_blocking($fp, TRUE); 
+$JunkHead3 = @fread($fp,1000);
+fclose($fp);
+$challenge = substr($JunkHead3, 5);
+   
+$ServerinfoCommand = "\xFF\xFF\xFF\xFFU" . $challenge;
+$fp = @fsockopen("udp://".''.$ip.':'.$port.'', $errno, $errstr);
+@fwrite($fp, $ServerinfoCommand);
+@stream_set_timeout($fp, 1);
+@stream_set_blocking($fp, TRUE); 
+$infos = @fread($fp,1000);
+fclose($fp);
+//bullshit end
+      
+$infos = chunk_split(substr(bin2hex($infos), 12), 2, '\\');
+$infos = explode('\\', $infos);
+$players = array();
+
+for ($i = 0; isset($infos[$i + 1]); $i = $j + 9) {
+
+// Player name
+$name = '';
+for ($j = $i + 1; isset($infos[$j]) && $infos[$j] != '00'; $j++) $name .= chr(hexdec($infos[$j]));
+         
+if (!isset($infos[$j + 8])) break;
+         
+// Gametime
+eval('$time="\x'.trim(chunk_split($infos[$j + 5] . $infos[$j + 6] . $infos[$j + 7] . $infos[$j + 8], 2,"\x"), "\x") . '";');
+list(,$time) = unpack('f', $time);
+         
+// Score
+$score = ltrim($infos[$j + 4] . $infos[$j + 3] . $infos[$j + 2] . $infos[$j + 1], '0');
+         
+//hexdecs
+$dec = hexdec($score);
+$max = pow(2, 4 * (strlen($score) + (strlen($score) % 2)));
+$_dec = $max - $dec;
+$scoredesc = $dec > $_dec ? -$_dec : $dec;
+//hexdecs
+         
+$players[] = array(
+'id'   =>   hexdec($infos[$i]),
+'name'   =>   $name,
+'score'   =>   empty($score)? 0 : $scoredesc,
+'time'   =>   $time
+);
+}
+//////////GET PLAYERS
+
+switch($server['server_os']) {
+case 'w': {
+$server['server_os'] = "Windows";
+break;
+}
+case 'l': {
+$server['server_os'] = "Linux";
+break;
+}
+}
+
+///////////////////////KRAI NA QUERYTATA//////////////////////////////
+return array('s_name'=>$server['name'],'s_map'=>$server['map'],'s_players'=>$server['players'],'s_maxplayers'=>$server['playersmax'],'s_os'=>$server['server_os'],'s_game'=>$server['gamedir'],'s_vac'=>$server['vac'],'s_bots'=>$server['bots'],'s_playerlist'=>$players);
+}
