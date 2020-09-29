@@ -320,4 +320,3 @@ $("#table").tablesorter( {sortList: [[0,0], [1,0]]} );
 		closeEffect	: 'none'
 	});
 </script>
-<?php include("js/vote.php");?>
