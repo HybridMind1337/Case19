@@ -1,0 +1,75 @@
+{{> header }}
+{{> leftmenu }}
+{{> rightmenu }}
+<div class="centered">
+   {{#allnews}}
+   <div class="box">
+      <div class="boxhead"><span class="boxhead_titles"><i class="fa fa-comment"></i> <a href="news/{{news_seourl}}">{{news_title}}</a></span></div>
+      <img src="{{news_img}}" class="news_img" alt="" />
+      {{&news_text}} 
+      <hr />
+      <i class="fas fa-user-plus"></i> <b>{{lang_author}}</b>: <span style="color:darkred;">{{news_username}}</span>, <i class="far fa-calendar-plus"></i> <b>{{lang_write_on}}</b>: {{news_date}},  <i class="fas fa-comments"></i> <b>{{lang_comments}}</b>: {{news_comments}} <a href="news/{{news_seourl}}" style="font-size: 10px;" class="btn btn-primary btn-sm">{{lang_readmore}}</a>
+   </div>
+
+   {{/allnews}}
+   {{&no_have_news}}
+   <br />
+   {{&pagination_news}}
+   {{#news_exists}} 
+   <div class="box">
+      <div class="boxhead"><span class="boxhead_titles"><i class="fa fa-comment"></i> {{news_title}}</span></div>
+      <img alt="" src="{{news_img}}" class="news_img"/> 
+      {{&news_text}}
+      <hr />
+      <i class="fas fa-user-plus"></i> <b>{{lang_author}}</b>: <span style="color:darkred">{{news_author}}</span>, <i class="far fa-calendar-plus"></i> <b>{{lang_write_on}}</b>: {{news_date}},  <i class="fas fa-comments"></i> <b>{{lang_comments}}</b>: {{news_comments}}
+   </div>
+   <div class="box">
+      <div class="boxhead"><span class="boxhead_titles"><i class="fas fa-comments"></i> {{lang_comments}}</span></div>
+      <br/>
+      {{&no_comments_here}}
+      {{#allcomments}}
+      <div class="comments-head">
+         <div class="author-avatar pull-left">
+            <div class="ava_news">{{&comment_ava}}</div>
+            <br/>		
+         </div>
+         <div class="name pull-left">
+            <a href="{{baseurl}}/{{forum_path}}/memberlist.php?mode=viewprofile&amp;u={{comment_userid}}" style="color:#{{comment_nick_color}} !important">&nbsp;{{comment_author}}</a> <span style="color:red">::</span> {{comment_date}}:<br/>			
+         </div>
+      </div>
+      <div class="clearfix"></div>
+      <div  style="width: 100%;">
+         <p class="comments_block">
+            {{&comment_text}}
+         </p>
+      </div>
+      {{/allcomments}}
+      <hr/>
+      {{#is_logged}}
+      {{#comments_enable}}
+      <form method="post">
+         <input type="hidden" name="com_username" value="{{username}}" />
+         <input type="hidden" name="com_user_color" value="{{user_color}}" />
+         <input type="hidden" name="com_user_ava" value="{{user_avatar}}" />
+         <textarea name="com_text" rows="3" class="form-control" id="emoticons_here2"></textarea><br/>
+         <a href="javascript:void(0);" class="chat_smilies"><i class="fa fa-smile-o" onClick="open_pop()" ></i></a>
+         <input type="submit" name="submit_comm" value="{{lang_send}}" class="btn btn-md btn-success"/>
+      </form>
+      {{/comments_enable}}
+      {{^comments_enable}}
+      <div class="alert alert-danger"><i class="fa fa-exclamation-triangle"></i> {{lang_comments_disabled}}</div>
+      {{/comments_enable}}
+      {{#submit_com_suc}} <br/>
+      <div class="alert alert-success"><i class="fa fa-check"></i> {{&submit_com_suc}}</div>
+      {{/submit_com_suc}}
+      {{/is_logged}}
+      {{^is_logged}}
+      <div class="alert alert-warning"><i class='fa fa-exclamation-triangle'></i> {{lang_post_comments_warning}}</div>
+      {{/is_logged}}
+   </div>
+   {{/news_exists}}
+   {{> last_topics }}
+   {{> ads_468x60}}
+</div>
+<div class="clearfix"></div>
+{{> footer }}

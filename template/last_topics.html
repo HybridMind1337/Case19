@@ -1,0 +1,22 @@
+<div class="box">
+    <div class="boxhead"><span class="boxhead_titles"><i class="fa fa-comment"></i> {{lang_last}} 5 {{lang_topics_sm}}</span></div>
+    <br/>
+    <div class="table-responsive">
+      <table class="table">
+        <tr>
+       <td>{{lang_title}}</td>
+       <td>{{lang_author}}</td>
+       <td>{{lang_date}}</td>
+       <td>{{lang_views}}</td>
+       </tr>
+       {{#last_topics}}
+       <tr>
+       <td><a href="{{topic_link}}" target="_blank">{{ topic_titles }}</a></td>
+       <td style="color:#{{topic_user_color}}">{{ usernames }}</td>
+       <td>{{ topic_time }}</td>
+       <td>{{ topic_views }}</td>
+       </tr>
+       {{/last_topics}}
+      </table>
+    </div>
+    </div>

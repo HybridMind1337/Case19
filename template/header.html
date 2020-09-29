@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+   <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+      <title>{{site_name}} {{#news_exists}} - {{news_title}} {{/news_exists}} {{^news_exists}} - {{page_title}}{{/news_exists}}</title>
+
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+      {{#is_uploadimg_page}}
+<link rel="stylesheet" href="{{baseurl}}/template/assets/dropzone.css">  
+{{/is_uploadimg_page}}
+      <link rel="stylesheet" href="{{ baseurl }}/template/assets/custom.css">
+      <link rel="icon" href="{{ baseurl }}/{{ favicon }}">
+
+
+      {{#google_site_verify}}
+      <meta name="google-site-verification" content="{{ google_site_verify }}" />
+      {{/google_site_verify}}
+      {{#servers_enable}}
+      <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+      {{/servers_enable}}
+   </head>
+   <body>
+      <div class="icon-bar animate__animated animate__pulse">
+         <a href="{{&fb_link}}" class="facebook"><i class="fab fa-facebook"></i></a> 
+         <a href="{{&tw_link}}" class="twitter"><i class="fab fa-twitter"></i></a> 
+         <a href="{{&goo_link}}" class="google"><i class="fab fa-google-plus"></i></a> 
+       </div>
+      <div class="loginbar text-center animate__animated animate__bounceInDown">
+         <div class="container">
+      
+         {{#is_logged}}
+         <span class="avatar">{{&user_avatar}}</span> {{lang_welcome}}, <a href="{{baseurl}}/{{forum_path}}/memberlist.php?mode=viewprofile&amp;u={{user_id}}" class="badge badge-info" title="{{lang_view_profile}}">{{username}}</a>
+         {{lang_posts}}: <span class="badge badge-pill badge-info">{{user_posts}}</span> <b>IP</b>: <span class="badge badge-pill badge-danger">{{user_ip}}</span>
+            <a href="{{baseurl}}/{{forum_path}}/ucp.php" class="btn btn-primary btn-sm" style="font-size: 11px;" role="button" target="_blank" title="{{lang_config}}"><i class="fas fa-cog"></i> {{lang_config}}</a>
+            <a href="{{user_logout}}" class="btn btn-danger btn-sm" style="font-size: 11px;" role="button" target="_blank" title="{{lang_logout}}"><i class="fas fa-sign-out-alt"></i> {{lang_logout}}</a>
+            {{#is_admin}}
+            <a href="{{baseurl}}/admin" class="btn btn-secondary btn-sm" style="font-size: 11px;" role="button" target="_blank"><i class="fas fa-user-lock"></i> {{lang_admin_panel}}</a><br/>
+            {{/is_admin}}
+         &nbsp;
+         {{/is_logged}}
+         {{^is_logged}}
+         {{ lang_need_to_log }}&nbsp;&nbsp;
+         <div class="btn-group" role="group" aria-label="Login Buttons">
+            <a class="btn btn-success btn-sm" href="{{baseurl}}/{{forum_path}}/ucp.php?mode=register" role="button"><i class="fas fa-user-plus"></i> {{lang_register}}</a>
+            <a class="btn btn-primary btn-sm" href="{{baseurl}}/{{forum_path}}/ucp.php?mode=login" role="button"><i class="fas fa-key"></i> {{lang_login}}</a>
+         </div>
+         {{/is_logged}}
+      </div>
+   </div>
+      <div class="headarche">
+         <div class="animate__animated animate__jackInTheBox logo"></div>
+      </div>
+      <div class="container">
+      <div class="topnav" id="myTopnav">
+         <a href="{{baseurl}}"><i class="fa fa-home"></i> {{ lang_home }}</a>
+         <a href="{{baseurl}}/forums"><i class="fas fa-pencil-alt"></i> {{ lang_forum }}</a>
+         <a href="{{baseurl}}/aboutus.php"><i class="fa fa-question-circle"></i> {{ lang_aboutus }}</a>
+         <a href="{{baseurl}}/contact.php"><i class="fa fa-envelope"></i> {{ lang_contacts }}</a>
+         {{#servers_enable}}
+         <a href="{{baseurl}}/servers.php"><i class="fa fa-server"></i> {{ lang_servers }}</a>
+         {{/servers_enable}}
+         <a href="{{baseurl}}/bans"><i class="fa fa-user-times"></i> {{ lang_banlist }}</a>
+         <a href="javascript:void(0);" style="font-size:15px;" class="icon" onclick="TopNav()">&#9776;</a>
+       </div>
+      <div class="wrapper">
